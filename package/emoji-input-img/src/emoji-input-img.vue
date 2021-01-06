@@ -56,7 +56,6 @@ export default {
       align-items: flex-end;
       justify-content: space-around;
       background-color: #f5f6f9;
-      padding: 7px 0 12px;
 
       .record-text {
         flex: auto;
