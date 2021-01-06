@@ -9,16 +9,14 @@
       />
       <button class="customer-emoji-btn" @click="handleShow"></button>
     </div>
-    <Emoji v-if="emojiShow" />
+    <Emoji v-if="emojiShow" @selectEmoji="selectEmoji" />
   </div>
 </template>
 
 <script>
 import EmojiInput from './emoji-input'
 import Emoji from './emoji'
-import Vue from 'vue'
 
-Vue.prototype.$bus = new Vue()
 export default {
   name: 'EmojiInputImg',
   components: {
@@ -26,6 +24,7 @@ export default {
     EmojiInput
   },
   data() {
+    console.log(123123123)
     return {
       message: '',
       emojiShow: false,
@@ -39,6 +38,12 @@ export default {
       this.emojiShow = !this.emojiShow
       this.$refs.inputField.$refs.emojiInput.focus()
       this.$refs.inputField.$refs.emojiInput.blur()
+    },
+    /**
+     * 选择emoji
+     */
+    selectEmoji(emoji) {
+      this.$refs.inputField.handleEmojiPicked(emoji)
     }
   },
 }

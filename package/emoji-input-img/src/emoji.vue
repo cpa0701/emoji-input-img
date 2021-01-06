@@ -64,7 +64,7 @@ export default {
       return name.replace(/:/g, '')
     },
     selectItem(emoji) {
-      this.$bus.$emit('select_Emoji', emoji)
+      this.$emit('selectEmoji', emoji)
       this.$emit('select')
     }
   },

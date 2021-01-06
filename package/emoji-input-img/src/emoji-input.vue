@@ -47,15 +47,10 @@ export default {
       }
     }
   },
-  mounted() {
-    this.$bus.$on('select_Emoji', (emoji) => {
-      this._handleEmojiPicked(emoji)
-    })
-  },
   methods: {
     getSelectRange() {
       // 获取选定对象
-      var selection = getSelection()
+      const selection = getSelection()
       // 设置最后光标对象
       this.lastEditRange = selection.getRangeAt(0)
     },
@@ -102,8 +97,8 @@ export default {
       })
       this.$emit('update:message', needSendText)
     },
-    _handleEmojiPicked(emoji) {
-      var emojiText = createImgNode(emoji)
+    handleEmojiPicked(emoji) {
+      const emojiText = createImgNode(emoji)
       this.cursorMove(emojiText)
       this.getText()
     },
@@ -112,9 +107,9 @@ export default {
        *
        */
     cursorMove(cnt) {
-      var edit = this.$refs.emojiInput
+      const edit = this.$refs.emojiInput
       const lastEditRange = this.lastEditRange
-      var selection = getSelection()
+      const selection = getSelection()
       if (lastEditRange) {
         // 存在最后光标对象，选定对象清除所有光标并添加最后光标还原之前的状态
         selection.removeAllRanges()
@@ -122,14 +117,14 @@ export default {
         this.$refs.emojiInput.blur()
       }
       // 判断选定对象范围是编辑框还是文本节点
-      var range = document.createRange()
+      let range = document.createRange()
       if (selection.anchorNode && selection.anchorNode.nodeName !== '#text') {
         // 创建新的光标对象
         // 光标对象的范围界定为新建的表情节点
         range.selectNodeContents(edit)
         if (edit.childNodes.length > 0) {
           // 如果文本框的子元素大于0，则表示有其他元素，则按照位置插入表情节点
-          for (var i = 0; i <= edit.childNodes.length; i++) {
+          for (let i = 0; i <= edit.childNodes.length; i++) {
             if (i === selection.anchorOffset) {
               edit.insertBefore(cnt, edit.childNodes[i])
               // 光标位置定位在表情节点的最大长度
@@ -153,15 +148,15 @@ export default {
         // 如果是文本节点则先获取光标对象
         range = selection.getRangeAt(0)
         // 获取光标对象的范围界定对象，一般就是textNode对象
-        var textNode = range.startContainer
+        const textNode = range.startContainer
         // 获取光标位置
-        var rangeStartOffset = range.startOffset
-        var textNodeContent = textNode.textContent
+        const rangeStartOffset = range.startOffset
+        const textNodeContent = textNode.textContent
         // 截取左文本、右文本
-        var sliceLeftText = textNodeContent.slice(0, rangeStartOffset)
-        var sliceRightText = textNodeContent.slice(rangeStartOffset)
-        var textLeftNode = document.createTextNode(sliceLeftText)
-        var textRightNode = document.createTextNode(sliceRightText)
+        const sliceLeftText = textNodeContent.slice(0, rangeStartOffset)
+        const sliceRightText = textNodeContent.slice(rangeStartOffset)
+        const textLeftNode = document.createTextNode(sliceLeftText)
+        const textRightNode = document.createTextNode(sliceRightText)
         // 文本节点在光标位置处插入新的表情内容
         sliceLeftText && edit.insertBefore(textLeftNode, textNode)
         edit.insertBefore(cnt, textNode)
