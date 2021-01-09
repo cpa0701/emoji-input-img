@@ -17,10 +17,10 @@
 
 <script>
 import { createImgNode } from '../lib/emoji.js'
+import { renderEmoji } from '../lib/emoji'
 
 export default {
   name: 'EmojiInput',
-
   components: {},
   props: {
     message: {
@@ -47,12 +47,59 @@ export default {
       }
     }
   },
+  mounted() {
+    this.$refs.emojiInput.addEventListener('paste', this.paste)
+  },
+  destroyed() {
+    this.$refs.emojiInput.removeEventListener('paste', this.paste)
+  },
   methods: {
     getSelectRange() {
       // 获取选定对象
       const selection = getSelection()
       // 设置最后光标对象
       this.lastEditRange = selection.getRangeAt(0)
+    },
+    /**
+       * 监听粘贴
+       */
+    paste(e) {
+      e.preventDefault()
+      e.stopPropagation()
+      const emojiText = renderEmoji(e.clipboardData.getData('Text'))
+      const isIOS = () => {
+        const u = navigator.userAgent
+        const isiOS = !!u.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/) // ios终端
+        if (isiOS) {
+          return 'ios'
+        }
+        return false
+      }
+      if (!isIOS()) {
+        const div = document.createElement('div')
+        div.innerHTML = emojiText
+        const count = div.childNodes.length
+        for (let i = 0; i < count; i++) {
+          this.cursorMove(div.childNodes[0])
+        }
+      } else {
+        const edit = this.$refs.emojiInput
+        edit.innerHTML = edit.innerHTML + emojiText
+        const selection = getSelection()
+        // 判断选定对象范围是编辑框还是文本节点
+        let range = document.createRange()// 如果是文本节点则先获取光标对象
+        range = selection.getRangeAt(0)
+        range.setStart(edit, edit.childNodes.length)
+        // 光标开始和光标结束重叠
+        range.collapse(true)
+        // 清除选定对象的所有光标对象
+        selection.removeAllRanges()
+        // 插入新的光标对象
+        selection.addRange(range)
+        // 无论如何都要记录最后光标对象
+        this.lastEditRange = selection.getRangeAt(0)
+      }
+      this.getText()
     },
     handleClick(event) {
       const target = event.target
@@ -200,6 +247,10 @@ export default {
   }
 
   .sc-user-input--text {
+    -webkit-user-select: text;
+    user-select: text;
+    height: auto;
+    min-height: 19px;
     width: 100%;
     resize: none;
     color: #323233;
@@ -211,6 +262,11 @@ export default {
     overflow-y: auto;
     word-break: break-all;
     text-align: left;
+
+    * {
+      -webkit-user-select: text;
+      user-select: text;
+    }
   }
 
   .sc-user-input--buttons {

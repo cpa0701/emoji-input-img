@@ -1,59 +1,60 @@
 <template>
-  <div class="emoji">
+  <div class="emoji-list">
     <ul class="emoji-controller">
       <li
-        v-for="(pannel,index) in pannels_text"
+        v-for="(panel,index) in emojiData"
         :key="index"
-        :class="{'active': index === activeIndex}"
+        :class="{'active': index === activeIndex,'emoji':index!==0}"
         @click="changeActive(index)"
       >
-        <img :src="pannel" alt="" />
+        <img
+          v-if="index===0"
+          src="https://xsyx-front-daily-1259014075.cos.ap-shanghai.myqcloud.com/common-lib/0.1.3/emoji/smile.png"
+          alt=""
+        />
+        <template v-else>{{ panel.name }}</template>
       </li>
     </ul>
     <ul class="emoji-container">
       <li
-        v-for="(emojiGroup, index) in emojis"
+        v-for="(emoji, index) in emojiData[activeIndex].emojis"
         :key="index"
         style="padding: 0"
       >
-        <span v-if="index === activeIndex">
-          <a
-            v-for="(emoji, index) in emojiGroup"
-            :key="index"
-            href="javascript:;"
-            @click.stop="selectItem(emoji)"
+        <a
+          v-if="0 === activeIndex"
+          href="javascript:;"
+          @click.stop="selectItem(emoji)"
+        >
+          <span
+            :title="emoji"
+            :class="'sprite-' + getPureName(emoji)"
+            @click.stop.prevent="selectItem(emoji)"
           >
-            <span
-              :title="emoji"
-              :class="'sprite-' + getPureName(emoji)"
-              class="emoji-item"
-              @click.stop.prevent="selectItem(emoji)"
-            >
-            </span>
-          </a>
-        </span>
+          </span>
+        </a>
+        <a
+          v-else
+          href="javascript:;"
+          @click.stop="selectItem(emoji)"
+        >
+          <span class="emoji-item" @click.stop.prevent="selectItem(emoji)">
+            {{ emoji }}
+          </span>
+        </a>
       </li>
     </ul>
   </div>
 </template>
 <script>
-import data from '../lib/emoji-data.json'
+import emojiData from '../lib/emojiData'
 
 export default {
   name: 'Emoji',
   data() {
     return {
-      emojiData: data,
-      pannels: ['表情'],
-      pannels_text: [require('../images/pannels-smile.png')],
+      emojiData,
       activeIndex: 0
-    }
-  },
-  computed: {
-    emojis() {
-      return this.pannels.map(item => {
-        return Object.keys(this.emojiData[item])
-      })
     }
   },
   methods: {
@@ -65,7 +66,6 @@ export default {
     },
     selectItem(emoji) {
       this.$emit('selectEmoji', emoji)
-      this.$emit('select')
     }
   },
 }
@@ -74,9 +74,10 @@ export default {
 <style lang='less' scoped>
   @import '../lib/emoji-sprite';
 
-  .emoji {
+  .emoji-list {
     background: #EFEFEF;
     border-top: 1px solid #eee;
+    user-select: none;
 
     .emoji-controller {
       background: #F5F6F9;
@@ -91,7 +92,7 @@ export default {
         height: 36px;
         margin: 0 5px;
         list-style-type: none;
-        font-size: 12px;
+        font-size: 16px;
         line-height: 36px;
         cursor: pointer;
         text-align: center;
@@ -105,6 +106,10 @@ export default {
         &.active {
           background: #fff;
         }
+
+        &.emoji {
+          padding-top: 0;
+        }
       }
     }
 
@@ -113,31 +118,31 @@ export default {
       overflow-y: auto;
       overflow-x: hidden;
       position: relative;
-      padding-left: 0;
-      padding: 10px;
+      padding: 5px 10px;
 
       li {
         font-size: 0;
         padding: 5px;
+        float: left;
+        overflow: hidden;
+        transition: all ease-out .2s;
 
-        a {
-          float: left;
-          overflow: hidden;
-          height: 35px;
-          transition: all ease-out .2s;
+        &:hover {
           border-radius: 4px;
+          background-color: #d8d8d8;
+          border-color: #d8d8d8;
+        }
 
-          &:hover {
-            background-color: #d8d8d8;
-            border-color: #d8d8d8;
-          }
+        span {
+          width: 25px;
+          height: 25px;
+          display: inline-block;
+          border: 1px solid transparent;
+          cursor: pointer;
 
-          span {
-            width: 25px;
-            height: 25px;
-            display: inline-block;
-            border: 1px solid transparent;
-            cursor: pointer;
+          &.emoji-item {
+            margin: 5px;
+            font-size: 18px;
           }
         }
       }

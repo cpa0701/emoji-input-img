@@ -1,6 +1,6 @@
 {
   "name": "emoji-input-img",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "private": false,
   "scripts": {
     "serve": "vue-cli-service serve",
