@@ -1,24 +1,21 @@
 # emoji-input-img
 
-## Project setup
+## 移动支持图片表情包的输入框
 ```
-npm install
-```
-
-### Compiles and hot-reloads for development
-```
-npm run serve
+npm install emoji-input-img
 ```
 
-### Compiles and minifies for production
+### 引入
 ```
-npm run build
-```
-
-### Lints and fixes files
-```
-npm run lint
+import EmojiInputImg from 'emoji-input-img'
 ```
 
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+### 使用
+``` javascript
+<EmojiInputImg />
+```
+
+### 资源包路径
+```
+~package/emoji-input-img/src/emoji-input-img.vue
+```
